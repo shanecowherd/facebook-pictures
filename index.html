@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title of the document</title>
+  </head>
+
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    <script>
+      var pic = 1;
+
+      var print_pic = function(start,callback){
+        pic++;
+        $.getJSON("http://graph.facebook.com/" + start, function(json) {
+          if (json.id != null) {
+            if (json.link == null) {
+              $("#pictures").append('<div class="photowrapper"><center><img class="photo '+ json.gender +'" src="http://graph.facebook.com/' + json.id + '/picture?type=large" /><div class="name">' + json.name + ' - '+json.id+'</div></center></div>'); 
+            }
+            else {
+              $("#pictures").append('<a href="' + json.link + '"><div class="photowrapper"><center><img class="photo '+ json.gender +'" src="http://graph.facebook.com/' + json.id + '/picture?type=large" /><div class="name">' + json.name + ' - '+json.id+'</div></center></div></a>');
+            }
+          };
+          callback();
+        });
+
+      };
+
+
+      $(document).ready(function() {
+
+        setInterval(function(){
+          if ($("#loading").offset().top <= $(window).height() + $(window).scrollTop()) {
+            print_pic(pic, function(){
+              document.title = pic;
+            });
+          }
+        }, 20);
+      });
+    </script>
+    <style>
+      #loading {
+        clear: both;
+        display:block;
+        margin:50px;
+        margin-bottom:100px;
+      }
+      .photo {
+        max-width:150px;
+        max-height:150px;
+        overflow:hidden;
+        margin:10px;
+        background: #fff;
+        border: solid 1px #ccc;
+        padding: 5px;
+        padding-bottom:15px;    
+      }
+      .photowrapper {
+        float:left;
+        width:220px;
+        height:220px;   
+      }
+      .name {
+        font-size:10px;
+        font-family:arial;
+        color:black;
+        margin-top:-28px;
+        background-color: white;
+        display:block;
+      }
+      #footer {
+        clear:both;
+      }
+      .male {
+        -moz-box-shadow: 0 0 2px 2px #eaf1fe;
+        -webkit-box-shadow: 0 0 2px 2px #eaf1fe;
+        box-shadow: 0 0 2px 2px #eaf1fe;
+      }
+
+      .female {
+        -moz-box-shadow: 0 0 2px 2px #fddaf1;
+        -webkit-box-shadow: 0 0 2px 2px #fddaf1;
+        box-shadow: 0 0 2px 2px #fddaf1;   
+      }
+    </style>
+    <div id="pictures"></div>
+    <center><img id="loading" src="load.gif" /></center>
+  </body>
+
+</html>
